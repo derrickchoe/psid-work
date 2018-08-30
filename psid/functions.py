@@ -31,22 +31,3 @@ def subcategories(crosswalk, clist):
     subset = categories(crosswalk, clist)
     i = len(clist)
     return subset['C' + str(i + 1)].unique()
-
-def edit_dofiles():
-#     This function removes the [path]\ string from .do files to facilitate running a master .do file
-    for y in range(1999, 2017, 2):
-        path = "FamilyData/famxxxxer/FAMxxxxER.do".replace("xxxx", str(y))
-        writepath = "FamilyData/famxxxxer/FAMxxxxERnew.do".replace("xxxx", str(y))
-        with open(path ,"r") as file:
-            fix = file.read()
-            fix = fix.replace('[path]\\', '')
-        with open(writepath ,"w") as file:
-            file.write(fix)
-    for y in range(1999, 2009, 2):
-        path = "WealthData/wlthxxxx/wlthxxxx.do".replace("xxxx", str(y))
-        writepath = "WealthData/wlthxxxx/wlthxxxxnew.do".replace("xxxx", str(y))
-        with open(path ,"r") as file:
-            fix = file.read()
-            fix = fix.replace('[path]\\', '')
-        with open(writepath ,"w") as file:
-            file.write(fix)
