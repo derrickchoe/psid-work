@@ -3,9 +3,11 @@ os.chdir("../")
 
 # Format Family Data
 for y in range(1999, 2017, 2):
-    path = "FamilyData/famxxxxer/FAMxxxxER.do".replace("xxxx", str(y))
-    writepath = "FamilyData/famxxxxer/FAMxxxxERnew.do".replace("xxxx", str(y))
-    with open(path ,"r") as file:
+    yr = str(y)
+    path = "FamilyData/fam{}er".format(yr)
+    readpath = path + "/FAM{}ER.do".format(yr)
+    writepath = path + "/FAM{}ERnew.do".format(yr)
+    with open(readpath ,"r") as file:
         fix = file.read()
         fix = fix.replace('[path]\\', '')
     with open(writepath ,"w") as file:
@@ -24,9 +26,11 @@ master.close()
 
 # Format Wealth Data
 for y in range(1999, 2009, 2):
-    path = "WealthData/wlthxxxx/wlthxxxx.do".replace("xxxx", str(y))
-    writepath = "WealthData/wlthxxxx/wlthxxxxnew.do".replace("xxxx", str(y))
-    with open(path ,"r") as file:
+    yr = str(y)
+    path = "WealthData/wlth{}".format(yr)
+    readpath = path + "/wlth{}.do".format(yr)
+    writepath = path + "/wlth{}new.do".format(yr)
+    with open(readpath ,"r") as file:
         fix = file.read()
         fix = fix.replace('[path]\\', '')
     with open(writepath ,"w") as file:
