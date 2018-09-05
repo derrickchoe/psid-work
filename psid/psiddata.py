@@ -97,23 +97,34 @@ class psiddata:
         inddf['isparent'] = np.where(inddf['max9'].notnull(), 1, 0)
         return inddf
 
-    def outputdf(self, varobj, inclusive= False):
+    def outputdf(self, varobj, threshold= 0):
+        # threshold refers to the minimum number of missing years allowed
+        # per observation
+        # family data
         famdict = {}
         famdict = self.getfamdata(famdict, varobj.fam_ndf)
-
+        # consumption data
         famdict = self.consdata(famdict)
-
+        # individual data
         inddf = pd.DataFrame()
         inddf = self.getinddata(inddf, varobj.ind_ndf)
-
+        # merge individual and family data
         combineddf = self.merge_ind_fam(inddf, famdict)
         combineddf = self.merge_child(combineddf)
-
+        # rename variables
         widedf = combineddf.rename(columns = varobj.renamedict)
-        # if inclusive is false, only keep observations with data throughout
-        # entire timeline
-        if inclusive == False:
-            widedf = widedf.dropna(thresh = len(widedf.columns) - 1)
+        # only keep observations with enough data via threshold
+        # observations with missing data in a year will have family_id = 0
+        famlist = [value for value in varobj.renamedict.values()
+                   if value.startswith('family_id')]
+        # count number of missing years per row
+        droparray = [0] * len(widedf)
+        for col in famlist:
+            rowarray = np.where(widedf[col] == 0, 1, 0)
+            droparray += rowarray
+        # keep observations that fall within threshold
+        widedf = widedf[droparray <= threshold]
+
         # shift from wide to long
         finaldf = pd.wide_to_long(widedf, varobj.reshapelist,
                                   i = 'person_id', j = 'year')
