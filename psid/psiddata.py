@@ -6,12 +6,7 @@ from psid.functions import categories
 class psiddata:
     def __init__(self, rawdata = None):
         if isinstance(rawdata, psidraw):
-            self.rawfam = rawdata.rawfam
-            self.rawind = rawdata.rawind
-            self.rawchild = rawdata.rawchild
-            self.psidcw = rawdata.psidcw
-            self.concw = rawdata.concw
-            self.lastyear = rawdata.lastyear
+            self.rawdata = copy.deepcopy(rawdata)
         else:
             print('include raw data object')
 
@@ -21,12 +16,12 @@ class psiddata:
     #     Remove missing vars/vars already included
         varlist = [x for x in varlist if x != 'missing']
         for var in varlist:
-            df[var] = self.rawfam[year][var]
+            df[var] = self.rawdata.rawfam[year][var]
         return df
 
     def getfamdata(self, datadict, namedf):
         # this function updates a dictionary with raw family data
-        for year in range(1999, self.lastyear + 2, 2):
+        for year in range(1999, self.rawdata.lastyear + 2, 2):
             datadict.setdefault(year, pd.DataFrame())
             datadict[year] = self.getfamyeardata(datadict[year], namedf, year)
         return datadict
@@ -34,12 +29,12 @@ class psiddata:
     def getinddata(self, df, namedf):
     #     Get list of that year's variable names
         varlist = []
-        for year in range(1999, self.lastyear + 1, 2):
+        for year in range(1999, self.rawdata.lastyear + 1, 2):
             varlist = varlist + list(namedf['Y' + str(year)])
     #     Remove missing vars/vars already included
         varlist = [x for x in varlist if x != 'missing']
         for var in varlist:
-            df[var] = self.rawind[var]
+            df[var] = self.rawdata.rawind[var]
         return df
 
     def merge_ind_fam(self, inddf, famdict):
@@ -53,12 +48,12 @@ class psiddata:
             'interview information', 'family interview number (id)',
             'missing'
             ]
-        indid_list = categories(self.psidcw, indid_arg)
-        famid_list = categories(self.psidcw, famid_arg)
+        indid_list = categories(self.rawdata.psidcw, indid_arg)
+        famid_list = categories(self.rawdata.psidcw, famid_arg)
         newdict = {}
         # generate keep variable to track observations
         keep = [0] * len(inddf)
-        for year in range(1999, self.lastyear + 1, 2):
+        for year in range(1999, self.rawdata.lastyear + 1, 2):
     # assign copy of family ID with family data name to individual data
             famname = famid_list['Y' + str(year)].values[0]
             indname = indid_list['Y' + str(year)].values[0]
@@ -67,24 +62,25 @@ class psiddata:
             # keep observations that have appeared in data at least once
             keep = np.where((inddf[famname] != 0) | (keep == 1), 1, 0)
             # generate person_id for merge with child data
-        inddf['person_id'] = (self.rawind['ER30001'] * 1000 +
-                              self.rawind['ER30002'])
+        inddf['person_id'] = (self.rawdata.rawind['ER30001'] * 1000 +
+                              self.rawdata.rawind['ER30002'])
         return inddf[keep == 1]
 
     # Crosswalk for pulling data and renaming
     def consdata(self, d = {}):
 #         pull family raw consumption data
-        for year in range(1999, self.lastyear + 1, 2):
-            varlist = self.concw[year].dropna()
+        for year in range(1999, self.rawdata.lastyear + 1, 2):
+            varlist = self.rawdata.concw[year].dropna()
             for var in varlist:
-                d[year][var] = self.rawfam[year][var]
+                d[year][var] = self.rawdata.rawfam[year][var]
         return d
 
 
     def merge_child(self, inddf):
         # create markers for whether someone is a parent
         # subset for those with children?
-        child = copy.deepcopy(self.rawchild[self.rawchild['CAH9'] < 98])
+        child = copy.deepcopy(self.rawdata.rawchild[
+                              self.rawdata.rawchild['CAH9'] < 98])
         child['person_id'] = child['CAH3'] * 1000 + child['CAH4']
         # keep those with children
         child['max9'] = child.groupby('person_id')['CAH9'].transform(max)
@@ -100,6 +96,19 @@ class psiddata:
     def outputdf(self, varobj, threshold= 0):
         # threshold refers to the minimum number of missing years allowed
         # per observation
+        # start by initializing id variables
+        varobj.update_rename(
+            ['family_id'],
+            ['family', 'survey information', 'interview information',
+            'family interview number (id)', 'missing']
+            )
+        varobj.update_rename(
+            ['indfam_id'],
+            ['individual', 'survey information', 'interview information',
+            'id (interview)', 'missing']
+            )
+
+
         # family data
         famdict = {}
         famdict = self.getfamdata(famdict, varobj.fam_ndf)
