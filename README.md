@@ -7,6 +7,11 @@ This repo is currently designed to handle PSID data from 1999 onwards. All neces
 2. Download the individual-level data. This comes as a single extract titled "Cross-year Individual: 1968-2015."
 3. Download the PSID consumption data, titled "Consumption Expenditure Data: 1999-2013."
 
-Once the data are all download, extract the family folders into the "FamilyData" folder of this repo, and the wealth data into the "WealthData" folder of this repo. "FamilyData" should thus contain several folders labelled "fam1999er," "fam2003er," etc. Similarly, "WealthData" will contain "wlth2003," "wlth2007," etc. 
-
+Once the data are all download, extract the zipped files into their respective folders within the repo:
+<ul>
+  <li> "FamilyData" should thus contain several folders labelled "fam1999er," "fam2003er," etc. </li>
+  <li> "WealthData" will contain "wlth2003," "wlth2007," etc. </li>
+  <li> "IndividualData" will contain "ind2015er" </li>
+  <li> "ChildHistoryData" will contain "CAH85_15" </li>
+</ul>
 The next step is to run the "import_data.py" script in the "psid" folder. 
