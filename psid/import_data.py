@@ -1,6 +1,33 @@
 import os
 os.chdir("../")
 
+# Format Individual Data
+path = "IndividualData/ind2015er/"
+folderpath = os.getcwd() +"\IndividualData"
+readpath = path + "IND2015ER.do"
+writepath = path + "IND2015ERnew.do"
+with open(readpath, "r") as file:
+    fix = file.read()
+    fix = fix.replace('[path]\\', '')
+with open(writepath, "w") as file:
+    file.write("cd " + folderpath)
+    file.write(fix)
+    file.write("\nsave individual, replace;")
+
+# Format Child History Data
+path = "ChildHistoryData/CAH85_15/"
+folderpath = os.getcwd() +"\ChildHistoryData"
+readpath = path + "CAH85_15.do"
+writepath = path + "CAH85_15new.do"
+with open(readpath, "r") as file:
+    fix = file.read()
+    fix = fix.replace('[path]\\', '')
+with open(writepath, "w") as file:
+    file.write("cd " + folderpath)
+    file.write(fix)
+    file.write("\nsave childhistory, replace;")
+
+
 # Format Family Data
 for y in range(1999, 2017, 2):
     yr = str(y)

@@ -41,6 +41,6 @@ class psidraw:
         self.lastyear = lastyear
         self.psidcw = self.psidcw()
         self.rawfam = self.initiate_dict()
-        self.rawind = pd.read_stata('individual.dta')
-        self.rawchild = pd.read_stata('childhistory.dta')
+        self.rawind = pd.read_stata('IndividualData/individual.dta')
+        self.rawchild = pd.read_stata('ChildHistoryData/childhistory.dta')
         self.concw = self.initiate_concw()
