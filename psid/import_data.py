@@ -16,8 +16,8 @@ with open(writepath, "w") as file:
     file.write("\nsave ..\individual, replace;")
 
 # Format Child History Data
-path = "ChildHistoryData/CAH85_15/"
-folderpath = os.getcwd() +"\ChildHistoryData\CAH85_15"
+path = "ChildHistoryData/cah85_15/"
+folderpath = os.getcwd() +"\ChildHistoryData\cah85_15"
 readpath = path + "CAH85_15.do"
 writepath = path + "CAH85_15new.do"
 with open(readpath, "r") as file:
@@ -45,11 +45,12 @@ master = open("FamilyData/formatfam1.do", "w")
 famfolder = os.getcwd() +"\FamilyData"
 master.write("cd " + "\"" + famfolder + "\"\n")
 master.write("set maxvar 10000 \n")
-master.write("forval i = 1999(2)2015{ \n")
-master.write("cd " +  "\"" + famfolder + "\FAM`i'er\" \n" )
-master.write("do \"FAM`i'ERnew.do\" \n")
-master.write("save \"../fam`i'.dta\", replace \n")
-master.write("}")
+master.write("#delimit ; \n")
+master.write("forval i = 1999(2)2015{; \n")
+master.write("cd " +  "\"" + famfolder + "\FAM`i'er\"; \n" )
+master.write("do \"FAM`i'ERnew.do\"; \n")
+master.write("save \"../fam`i'.dta\", replace; \n\n")
+master.write("};")
 master.close()
 
 # Format Wealth Data
@@ -68,21 +69,27 @@ master = open("WealthData/formatwealth1.do", "w")
 wealthfolder = os.getcwd() +"\WealthData"
 master.write("cd " + "\"" + wealthfolder + "\"\n")
 master.write("set maxvar 10000 \n")
-master.write("forval i = 1999(2)2015{ \n")
-master.write("cd " +  "\"" + wealthfolder + "\wlth`i'\" \n" )
-master.write("do \"wlth`i'new.do\" \n")
-master.write("save \"../wlth`i'.dta\", replace \n")
-master.write("}")
+master.write("#delimit ; \n")
+master.write("forval i = 1999(2)2007{; \n")
+master.write("cd " +  "\"" + wealthfolder + "\wlth`i'\"; \n" )
+master.write("do \"wlth`i'new.do\"; \n")
+master.write("save \"../wlth`i'.dta\", replace; \n\n")
+master.write("};")
 master.close()
 
 # master do file
 with open("format_data.do", "w") as file:
-    file.write("cd " + os.getcwd() + "\n")
-    # individual data
-    file.write("do IndividualData\ind2015er\IND2015ERnew.do" + "\n")
-    # child history data
-    file.write("do ChildHistoryData\CAH85_15\CAH85_15new.do" + "\n")
     # family data
+    file.write("clear \n")
+    file.write("cd " + os.getcwd() + "\n")
     file.write("do FamilyData\\formatfam1.do" + "\n")
     # wealth data
-    file.write("do WealthData\\formatwealth1.do")
+    file.write("clear \n")
+    file.write("cd " + os.getcwd() + "\n")
+    file.write("do WealthData\\formatwealth1.do \n")
+    # individual data
+    file.write("cd " + os.getcwd() + "\n")
+    file.write("do IndividualData\ind2015er\IND2015ERnew.do" + "\n")
+    # child history data
+    file.write("cd " + os.getcwd() + "\n")
+    file.write("do ChildHistoryData\cah85_15\CAH85_15new.do" + "\n")
