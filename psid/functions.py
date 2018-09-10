@@ -9,6 +9,13 @@ def categories(crosswalk, clist):
         subset = copy.deepcopy(subset[cond])
     return subset
 
+def cat_from_varname(crosswalk, varname):
+    subset = copy.deepcopy(crosswalk)
+    ylist = [x for x in crosswalk.columns if x.startswith('Y')]
+    df= crosswalk[ylist]
+    subset = subset[df.values == varname]
+    return subset
+
 def availableyears(crosswalk, clist, minyear = 1968, maxyear = 2015):
     ndf = categories(crosswalk, clist)
 #     all year columns
@@ -25,7 +32,7 @@ def findseries(crosswalk, varname):
     ylist = [x for x in crosswalk.columns if x.startswith('Y')]
     df= crosswalk[ylist]
     catlist = [x for x in crosswalk.columns if x.startswith('C')]
-    return crosswalk[df.values == 'ER60163'][catlist]
+    return crosswalk[df.values == varname][catlist]
 
 def subcategories(crosswalk, clist):
     subset = categories(crosswalk, clist)

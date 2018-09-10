@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import copy
 from psid import psidraw
-from psid.functions import categories
+from psid.functions import categories, cat_from_varname
 class psidvars:
     def __init__(self, rawdata = None):
         if isinstance(rawdata, psidraw):
@@ -41,6 +41,12 @@ class psidvars:
     def update_rename(self, namelist, clist):
         namedf = categories(self.psidcw, clist)
         newdict = self.rename(namedf, namelist)
+        self.renamedict.update(newdict)
+
+    def update_rename_varname(self, name, varname):
+        namedf = cat_from_varname(self.psidcw, varname)
+        vlist = [name]
+        newdict = self.rename(namedf, vlist)
         self.renamedict.update(newdict)
 
     def cons_renamedict(self):
