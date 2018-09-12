@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import copy
 from psid import psidraw, psidvars
-from psid.functions import categories
 class psiddata:
     def __init__(self, rawdata = None):
         if isinstance(rawdata, psidraw):
@@ -48,8 +47,8 @@ class psiddata:
             'interview information', 'family interview number (id)',
             'missing'
             ]
-        indid_list = categories(self.rawdata.psidcw, indid_arg)
-        famid_list = categories(self.rawdata.psidcw, famid_arg)
+        indid_list = self.rawdata.categories(indid_arg)
+        famid_list = self.rawdata.categories(famid_arg)
         newdict = {}
         # generate keep variable to track observations
         keep = [0] * len(inddf)

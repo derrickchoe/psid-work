@@ -37,6 +37,46 @@ class psidraw:
         concw = copy.deepcopy(concw.loc[2:])
         return concw
 
+    def categories(self, clist):
+        subset = copy.deepcopy(self.psidcw)
+        for i in range(0, len(clist)):
+            lowercase = subset['C' + str(i)].str.lower()
+            cond = lowercase.str.startswith(clist[i])
+            subset = copy.deepcopy(subset[cond])
+        assert len(subset) > 0
+        return subset
+
+    def cat_from_varname(self, varname):
+        subset = copy.deepcopy(self.psidcw)
+        ylist = [x for x in self.psidcw.columns if x.startswith('Y')]
+        df= self.psidcw[ylist]
+        assert varname in df.values
+        subset = subset[df.values == varname]
+        return subset
+
+    def availableyears(clist, minyear = 1968, maxyear = 2015):
+        ndf = self.categories(clist)
+    #     all year columns
+        ylist = [x for x in ndf.columns if x.startswith('Y')]
+    #     only year columns in range
+        rlist = [x for x in ylist if int(x[1:]) in range(minyear, maxyear + 1)]
+        for i in ndf.index:
+            print('ROW ' + str(i))
+            rdf = ndf[rlist]
+            notmissing = [x for x in rdf if rdf.loc[i, x] != 'missing']
+            print(ndf[notmissing].columns)
+
+    def findseries(self, varname):
+        ylist = [x for x in self.psidcw.columns if x.startswith('Y')]
+        df= self.psidcw[ylist]
+        catlist = [x for x in self.psidcw.columns if x.startswith('C')]
+        return self.psidcw[df.values == varname][catlist]
+
+    def subcategories(self, clist):
+        subset = self.categories(clist)
+        i = len(clist)
+        return subset['C' + str(i + 1)].unique()
+
     def load(self, lastyear = 2015):
         self.lastyear = lastyear
         self.psidcw = self.psidcw()

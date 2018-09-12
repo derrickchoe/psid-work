@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import copy
 from psid import psidraw
-from psid.functions import categories, cat_from_varname
 class psidvars:
     def __init__(self, rawdata = None):
         if isinstance(rawdata, psidraw):
@@ -12,9 +11,8 @@ class psidvars:
             self.renamedict = {}
             self.fam_ndf = pd.DataFrame()
             self.ind_ndf = pd.DataFrame()
-            self.lastyear  = rawdata.lastyear
-            self.psidcw = rawdata.psidcw
-            self.concw = rawdata.concw
+            self.rawdata = rawdata
+
         else:
             print('include raw data object')
 
@@ -30,7 +28,7 @@ class psidvars:
         assert(len(namedf) == len(namelist))
         # create dictionary with desired and raw data names + years
         rdict = {}
-        for year in range(1999, self.lastyear + 1, 2):
+        for year in range(1999, self.rawdata.lastyear + 1, 2):
             col_name = 'Y' + str(year)
             oglist = list(namedf[col_name])
             for i in range(0, len(oglist)):
@@ -39,12 +37,12 @@ class psidvars:
 
 # creates a renaming dictionary for a namedf of PSID data
     def update_rename(self, namelist, clist):
-        namedf = categories(self.psidcw, clist)
+        namedf = self.rawdata.categories(clist)
         newdict = self.rename(namedf, namelist)
         self.renamedict.update(newdict)
 
     def update_rename_varname(self, name, varname):
-        namedf = cat_from_varname(self.psidcw, varname)
+        namedf = self.rawdata.cat_from_varname(varname)
         vlist = [name]
         newdict = self.rename(namedf, vlist)
         self.renamedict.update(newdict)
@@ -52,8 +50,8 @@ class psidvars:
     def cons_renamedict(self):
         # adds consumption variables from psid crosswalk (available online)
         # to renamedict and reshapelist
-        for index, row in self.concw.iterrows():
-            for y in range(1999, self.lastyear + 1, 2):
+        for index, row in self.rawdata.concw.iterrows():
+            for y in range(1999, self.rawdata.lastyear + 1, 2):
                 ogname = row[y]
                 newname = row['name'].strip()
                 self.renamedict[ogname] = newname + str(y)
