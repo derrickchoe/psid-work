@@ -93,9 +93,11 @@ with open("format_data.do", "w") as file:
     # individual data
     file.write("cd " + os.getcwd() + "\n")
     file.write(
-        "do IndividualData\ind2015er\IND{}ERnew.do".format(end_str) + "\n")
+        "do IndividualData\ind{}er\IND{}ERnew.do"
+        .format(end_str, end_str) + "\n")
     # child history data
     file.write("cd " + os.getcwd() + "\n")
     file.write(
-        "do ChildHistoryData\cah85_15\CAH85_new.do".format(end_str[-2:]) + "\n")
+        "do ChildHistoryData\cah85_{}\CAH85_{}new.do"
+        .format(end_str[-2:], end_str[-2:]) + "\n")
     file.close()
