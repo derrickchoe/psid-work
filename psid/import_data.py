@@ -49,7 +49,7 @@ famfolder = os.getcwd() +"\FamilyData"
 master.write("cd " + "\"" + famfolder + "\"\n")
 master.write("set maxvar 10000 \n")
 master.write("#delimit ; \n")
-master.write("forval i = 1999(2)2015{; \n")
+master.write("forval i = 1999(2){}".format(end_str + "{; \n"))
 master.write("cd " +  "\"" + famfolder + "\FAM`i'er\"; \n" )
 master.write("do \"FAM`i'ERnew.do\"; \n")
 master.write("save \"../fam`i'.dta\", replace; \n\n")

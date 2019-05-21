@@ -31,9 +31,9 @@ class psidraw:
         return d
 
     def initiate_concw(self):
-        concw = pd.read_excel("ConsExpCrosswalk.xlsx")
+        concw = pd.read_excel("ConsExpCrosswalk_new.xlsx")
         concw.columns = ['name', 'oldname'] + list(
-            range(1999, self.lastyear + 1, 2))
+            range(1999, self.lastyear + 2, 2))
         concw = copy.deepcopy(concw.loc[2:])
         return concw
 
@@ -54,7 +54,7 @@ class psidraw:
         subset = subset[df.values == varname]
         return subset
 
-    def availableyears(clist, minyear = 1968, maxyear = 2015):
+    def availableyears(clist, minyear = 1968, maxyear = 2017):
         ndf = self.categories(clist)
     #     all year columns
         ylist = [x for x in ndf.columns if x.startswith('Y')]
@@ -77,7 +77,7 @@ class psidraw:
         i = len(clist)
         return subset['C' + str(i + 1)].unique()
 
-    def load(self, lastyear = 2015):
+    def load(self, lastyear = 2017):
         self.lastyear = lastyear
         self.psidcw = self.psidcw()
         self.rawfam = self.initiate_dict()

@@ -28,7 +28,7 @@ class psiddata:
     def getinddata(self, df, namedf):
     #     Get list of that year's variable names
         varlist = []
-        for year in range(1999, self.rawdata.lastyear + 1, 2):
+        for year in range(1999, self.rawdata.lastyear + 2, 2):
             varlist = varlist + list(namedf['Y' + str(year)])
     #     Remove missing vars/vars already included
         varlist = [x for x in varlist if x != 'missing']
@@ -52,7 +52,7 @@ class psiddata:
         newdict = {}
         # generate keep variable to track observations
         keep = [0] * len(inddf)
-        for year in range(1999, self.rawdata.lastyear + 1, 2):
+        for year in range(1999, self.rawdata.lastyear + 2, 2):
     # assign copy of family ID with family data name to individual data
             famname = famid_list['Y' + str(year)].values[0]
             indname = indid_list['Y' + str(year)].values[0]
