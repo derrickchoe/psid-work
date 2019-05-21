@@ -1,12 +1,15 @@
 import os
 os.chdir("../")
 
+endyear = 2017
+end_str = str(endyear)
+
 # Format Individual Data
 # NEED TO SET TO SUBFOLDERS
-path = "IndividualData/ind2015er/"
-folderpath = os.getcwd() +"\IndividualData\ind2015er"
-readpath = path + "IND2015ER.do"
-writepath = path + "IND2015ERnew.do"
+path = "IndividualData/ind{}er/".format(end_str)
+folderpath = os.getcwd() +"\IndividualData\ind{}er".format(end_str)
+readpath = path + "IND{}ER.do".format(end_str)
+writepath = path + "IND{}ERnew.do".format(end_str)
 with open(readpath, "r") as file:
     fix = file.read()
     fix = fix.replace('[path]\\', '')
@@ -16,10 +19,10 @@ with open(writepath, "w") as file:
     file.write("\nsave ..\individual, replace;")
 
 # Format Child History Data
-path = "ChildHistoryData/cah85_15/"
-folderpath = os.getcwd() +"\ChildHistoryData\cah85_15"
-readpath = path + "CAH85_15.do"
-writepath = path + "CAH85_15new.do"
+path = "ChildHistoryData/cah85_{}/".format(end_str[-2:])
+folderpath = os.getcwd() +"\ChildHistoryData\cah85_{}".format(end_str[-2:])
+readpath = path + "CAH85_{}.do".format(end_str[-2:])
+writepath = path + "CAH85_{}new.do".format(end_str[-2:])
 with open(readpath, "r") as file:
     fix = file.read()
     fix = fix.replace('[path]\\', '')
@@ -30,7 +33,7 @@ with open(writepath, "w") as file:
 
 
 # Format Family Data
-for y in range(1999, 2017, 2):
+for y in range(1999, endyear + 2, 2):
     yr = str(y)
     path = "FamilyData/fam{}er".format(yr)
     readpath = path + "/FAM{}ER.do".format(yr)
@@ -89,7 +92,10 @@ with open("format_data.do", "w") as file:
     file.write("do WealthData\\formatwealth1.do \n")
     # individual data
     file.write("cd " + os.getcwd() + "\n")
-    file.write("do IndividualData\ind2015er\IND2015ERnew.do" + "\n")
+    file.write(
+        "do IndividualData\ind2015er\IND{}ERnew.do".format(end_str) + "\n")
     # child history data
     file.write("cd " + os.getcwd() + "\n")
-    file.write("do ChildHistoryData\cah85_15\CAH85_15new.do" + "\n")
+    file.write(
+        "do ChildHistoryData\cah85_15\CAH85_new.do".format(end_str[-2:]) + "\n")
+    file.close()
